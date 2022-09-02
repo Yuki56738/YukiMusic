@@ -30,6 +30,10 @@ public class Main {
         SlashCommand commandJoin = SlashCommand.with("join", "VCに接続.")
                 .createForServer(api.getServerById("813401986299854859").get())
                 .join();
+        SlashCommand commandStop = SlashCommand.with("stop", "音楽を止める.")
+                .createForServer(api.getServerById("813401986299854859").get())
+                .join();
+
         api.addSlashCommandCreateListener(event -> {
             SlashCommandInteraction slashCommandInteraction = event.getSlashCommandInteraction();
             if (slashCommandInteraction.getUser().isBot()){
@@ -80,7 +84,6 @@ public class Main {
                 });
 
             }
-
         });
     }
 }

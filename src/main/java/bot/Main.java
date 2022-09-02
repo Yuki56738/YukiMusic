@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.ServerTextChannel;
@@ -16,8 +17,10 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 
 public class Main {
     public static void main(String[] args){
+        Dotenv dotenv = Dotenv.load();
+        String TOKEN = dotenv.get("DISCORD_TOKEN");
         DiscordApi api = new DiscordApiBuilder()
-                .setToken("OTg4OTI0NTM1NDg1MTMyODUz.GGMsM0.Js60n3pW1e2cHPMayI5n8Sw9YQxUEt_IYys_Uk")
+                .setToken(TOKEN)
                 .login().join();
         SlashCommand commandJoin = SlashCommand.with("join", "VCに接続.")
                 .createForServer(api.getServerById("813401986299854859").get())

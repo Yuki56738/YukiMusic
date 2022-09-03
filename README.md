@@ -1,6 +1,7 @@
 無料で使える音楽BOT「YukiMusic」  
 
 /join で召喚,  
+/play [URL] で再生,  
 /leave で退出.
 
 

@@ -65,7 +65,7 @@ public class Main {
 //                AudioPlayerManager playerManager = playerManagerMap.get(slashCommandInteraction.getServer().get());
 //                playerManager.shutdown();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
-                audioConnection.close();
+                audioConnection.removeAudioSource();
                 audioConnectionMap.remove(slashCommandInteraction.getServer().get());
             }
             if(slashCommandInteraction.getCommandName().equalsIgnoreCase("play")){

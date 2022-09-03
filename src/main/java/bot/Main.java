@@ -165,5 +165,15 @@ public class Main {
                 audioConnectionMap.remove(slashCommandInteraction.getServer().get());
             }
         });
+        api.addMessageCreateListener(event -> {
+            String msg = event.getMessageContent();
+            if (msg.equalsIgnoreCase(".debug")){
+                System.out.println(".debug hit.");
+                System.out.println(String.format("Logged in as: %s", api.getYourself().getName()));
+
+                for (Server x : api.getServers()) {
+
+                System.out.println(String.format("Now connected to: %s", x));
+            }       } });
     }
 }

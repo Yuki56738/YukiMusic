@@ -112,13 +112,20 @@ public class Main {
                 });
 
             }
-            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("join")){
+            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("join")) {
                 slashCommandInteraction.createImmediateResponder()
                         .setContent("Connecting...")
                         .respond();
                 TextChannel textChannel = slashCommandInteraction.getChannel().get();
                 Server server = slashCommandInteraction.getServer().get();
-                ServerVoiceChannel voiceChannel = slashCommandInteraction.getUser().getConnectedVoiceChannel(server).get();
+
+                ServerVoiceChannel voiceChannel;
+                try {
+                    voiceChannel = slashCommandInteraction.getUser().getConnectedVoiceChannel(server).get();
+                } catch (Exception e) {
+                    slashCommandInteraction.createImmediateResponder().setContent("どこのVCにも参加していません！").respond();
+                    throw new RuntimeException(e);
+                }
                 voiceChannel.connect().thenAccept(audioConnection -> {
                     textChannel.sendMessage("Connected.").join();
                     textChannel.sendMessage("Created by Yuki.").join();

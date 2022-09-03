@@ -121,6 +121,7 @@ public class Main {
                 ServerVoiceChannel voiceChannel = slashCommandInteraction.getUser().getConnectedVoiceChannel(server).get();
                 voiceChannel.connect().thenAccept(audioConnection -> {
                     textChannel.sendMessage("Connected.").join();
+                    textChannel.sendMessage("Created by Yuki.").join();
 //                    AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 //                    playerManager.registerSourceManager(new YoutubeAudioSourceManager());
 //                    AudioPlayer player = playerManager.createPlayer();

@@ -42,6 +42,7 @@ public class Main {
                 .setToken(TOKEN)
                 .login().join();
         System.out.println("discord bot built.");
+        System.out.println(String.format("Logged in as: %s", api.getYourself().getName()));
         SlashCommand commandJoin = SlashCommand.with("join", "VCに接続.")
                 .createGlobal(api).join();
         SlashCommand commandStop = SlashCommand.with("stop", "音楽を止める.")

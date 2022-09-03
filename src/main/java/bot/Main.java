@@ -22,12 +22,19 @@ import org.javacord.api.interaction.*;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
-    public static AudioConnection audioConnection1;
-    public static AudioPlayer player;
-    public static AudioPlayerManager playerManager;
+//    public static AudioConnection audioConnection1;
+//    public static AudioPlayer player;
+//    public static AudioPlayerManager playerManager;
+
+    public static Map<Server, AudioConnection> audioConnectionMap = new HashMap();
+
+//    public static Map<Server, AudioPlayerManager> playerManagerMap;
+//    public static Map<Server, AudioPlayer> playerMap;
     public static void main(String[] args){
         Dotenv dotenv = Dotenv.load();
         String TOKEN = dotenv.get("DISCORD_TOKEN");
@@ -42,18 +49,36 @@ public class Main {
         Arrays.asList(
                 SlashCommandOption.createWithOptions(SlashCommandOptionType.STRING, "URL", "URL")
         )).createGlobal(api).join();
+        SlashCommand commandLeave = SlashCommand.with("leave", "VCから切断.")
+                        .createGlobal(api).join();
 
         api.addSlashCommandCreateListener(event -> {
             SlashCommandInteraction slashCommandInteraction = event.getSlashCommandInteraction();
             if (slashCommandInteraction.getUser().isBot()){
                 return;
             }
+            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("stop")){
+                slashCommandInteraction.createImmediateResponder().setContent("Wait...").respond();
+//                AudioPlayerManager playerManager = playerManagerMap.get(slashCommandInteraction.getServer().get());
+//                playerManager.shutdown();
+                AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
+                audioConnection.close();
+            }
             if(slashCommandInteraction.getCommandName().equalsIgnoreCase("play")){
 //                System.out.println(slashCommandInteraction.getOptionStringValueByIndex(0));
+                slashCommandInteraction.createImmediateResponder().setContent("Playing...").respond();
                 String url = slashCommandInteraction.getOptionStringValueByIndex(0).get();
 //                System.out.println(url);
+//                AudioPlayer player = playerMap.get(slashCommandInteraction.getServer().get());
+//                System.out.println(audioConnectionMap.get(slashCommandInteraction.getServer().get()));
+                Server server = slashCommandInteraction.getServer().get();
+                AudioConnection audioConnection = audioConnectionMap.get(server);
+//                AudioPlayerManager playerManager = playerManagerMap.get(slashCommandInteraction.getServer().get());
+                AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
+                playerManager.registerSourceManager(new YoutubeAudioSourceManager());
+                AudioPlayer player = playerManager.createPlayer();
                 AudioSource source = new LavaplayerAudioSource(api, player);
-                audioConnection1.setAudioSource(source);
+                audioConnection.setAudioSource(source);
                 playerManager.loadItem(url, new AudioLoadResultHandler() {
                     @Override
                     public void trackLoaded(AudioTrack track) {
@@ -88,13 +113,17 @@ public class Main {
                 ServerVoiceChannel voiceChannel = slashCommandInteraction.getUser().getConnectedVoiceChannel(server).get();
                 voiceChannel.connect().thenAccept(audioConnection -> {
                     textChannel.sendMessage("Connected.").join();
-                    playerManager = new DefaultAudioPlayerManager();
-                    playerManager.registerSourceManager(new YoutubeAudioSourceManager());
-                    player = playerManager.createPlayer();
+//                    AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
+//                    playerManager.registerSourceManager(new YoutubeAudioSourceManager());
+//                    AudioPlayer player = playerManager.createPlayer();
 
-                    audioConnection1 = audioConnection;
-                    AudioSource source = new LavaplayerAudioSource(api, player);
-                    audioConnection.setAudioSource(source);
+//                    audioConnection1 = audioConnection;
+
+                    audioConnectionMap.put(server, audioConnection);
+//                    playerManagerMap.put(server, playerManager);
+//                    playerMap.put(server, player);
+//                    AudioSource source = new LavaplayerAudioSource(api, player);
+//                    audioConnection.setAudioSource(source);
 
 //                    playerManager.loadItem("https://www.youtube.com/watch?v=8pGRdRhjX3o", new AudioLoadResultHandler() {
 //                        @Override
@@ -126,6 +155,11 @@ public class Main {
 
             }
 
+            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("leave")){
+                slashCommandInteraction.createImmediateResponder().setContent("Disconnecting...").respond();
+                AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
+                audioConnection.close();
+            }
         });
     }
 }

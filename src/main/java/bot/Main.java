@@ -41,14 +41,15 @@ public class Main {
         DiscordApi api = new DiscordApiBuilder()
                 .setToken(TOKEN)
                 .login().join();
+        System.out.println("discord bot built.");
         SlashCommand commandJoin = SlashCommand.with("join", "VCに接続.")
                 .createGlobal(api).join();
         SlashCommand commandStop = SlashCommand.with("stop", "音楽を止める.")
                         .createGlobal(api).join();
         SlashCommand commandPlay = SlashCommand.with("play", "再生.",
-        Arrays.asList(
+            Arrays.asList(
                 SlashCommandOption.createWithOptions(SlashCommandOptionType.STRING, "URL", "URL")
-        )).createGlobal(api).join();
+            )).createGlobal(api).join();
         SlashCommand commandLeave = SlashCommand.with("leave", "VCから切断.")
                         .createGlobal(api).join();
 
@@ -63,6 +64,7 @@ public class Main {
 //                playerManager.shutdown();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
                 audioConnection.close();
+                audioConnectionMap.remove(slashCommandInteraction.getServer().get());
             }
             if(slashCommandInteraction.getCommandName().equalsIgnoreCase("play")){
 //                System.out.println(slashCommandInteraction.getOptionStringValueByIndex(0));
@@ -159,6 +161,7 @@ public class Main {
                 slashCommandInteraction.createImmediateResponder().setContent("Disconnecting...").respond();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
                 audioConnection.close();
+                audioConnectionMap.remove(slashCommandInteraction.getServer().get());
             }
         });
     }

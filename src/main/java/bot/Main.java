@@ -19,6 +19,7 @@ import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.channel.VoiceChannel;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.interaction.*;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -71,6 +72,8 @@ public class Main {
 //                System.out.println(slashCommandInteraction.getOptionStringValueByIndex(0));
                 slashCommandInteraction.createImmediateResponder().setContent("Playing...").respond();
                 String url = slashCommandInteraction.getOptionStringValueByIndex(0).get();
+                TextChannel textChannel = slashCommandInteraction.getChannel().get();
+
 //                System.out.println(url);
 //                AudioPlayer player = playerMap.get(slashCommandInteraction.getServer().get());
 //                System.out.println(audioConnectionMap.get(slashCommandInteraction.getServer().get()));
@@ -86,12 +89,14 @@ public class Main {
                     @Override
                     public void trackLoaded(AudioTrack track) {
                         player.playTrack(track);
+                        player.setVolume(1);
                     }
 
                     @Override
                     public void playlistLoaded(AudioPlaylist playlist) {
                         for (AudioTrack track : playlist.getTracks()){
                             player.playTrack(track);
+                            player.setVolume(1);
                         }
                     }
 

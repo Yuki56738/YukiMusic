@@ -170,6 +170,7 @@ public class Main {
             if (msg.equalsIgnoreCase(".debug")){
                 System.out.println(".debug hit.");
                 System.out.println(String.format("Logged in as: %s", api.getYourself().getName()));
+                System.out.println(String.format("audioConnectionMap: %s", audioConnectionMap));
 
                 for (Server x : api.getServers()) {
 

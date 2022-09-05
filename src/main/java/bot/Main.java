@@ -34,9 +34,9 @@ public class Main {
 
     public static Map<Server, AudioConnection> audioConnectionMap = new HashMap();
 
-//    public static Map<Server, AudioPlayerManager> playerManagerMap;
+    //    public static Map<Server, AudioPlayerManager> playerManagerMap;
 //    public static Map<Server, AudioPlayer> playerMap;
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
         String TOKEN = dotenv.get("DISCORD_TOKEN");
         DiscordApi api = new DiscordApiBuilder()
@@ -47,20 +47,20 @@ public class Main {
         SlashCommand commandJoin = SlashCommand.with("join", "VCに接続.")
                 .createGlobal(api).join();
         SlashCommand commandStop = SlashCommand.with("stop", "音楽を止める.")
-                        .createGlobal(api).join();
+                .createGlobal(api).join();
         SlashCommand commandPlay = SlashCommand.with("play", "再生.",
-            Arrays.asList(
-                SlashCommandOption.createWithOptions(SlashCommandOptionType.STRING, "URL", "URL")
-            )).createGlobal(api).join();
+                Arrays.asList(
+                        SlashCommandOption.createWithOptions(SlashCommandOptionType.STRING, "URL", "URL")
+                )).createGlobal(api).join();
         SlashCommand commandLeave = SlashCommand.with("leave", "VCから切断.")
-                        .createGlobal(api).join();
+                .createGlobal(api).join();
 
         api.addSlashCommandCreateListener(event -> {
             SlashCommandInteraction slashCommandInteraction = event.getSlashCommandInteraction();
-            if (slashCommandInteraction.getUser().isBot()){
+            if (slashCommandInteraction.getUser().isBot()) {
                 return;
             }
-            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("stop")){
+            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("stop")) {
                 slashCommandInteraction.createImmediateResponder().setContent("Wait...").respond();
 //                AudioPlayerManager playerManager = playerManagerMap.get(slashCommandInteraction.getServer().get());
 //                playerManager.shutdown();
@@ -68,7 +68,7 @@ public class Main {
                 audioConnection.removeAudioSource();
                 audioConnectionMap.remove(slashCommandInteraction.getServer().get());
             }
-            if(slashCommandInteraction.getCommandName().equalsIgnoreCase("play")){
+            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("play")) {
 //                System.out.println(slashCommandInteraction.getOptionStringValueByIndex(0));
                 slashCommandInteraction.createImmediateResponder().setContent("Playing...").respond();
                 String url = slashCommandInteraction.getOptionStringValueByIndex(0).get();
@@ -94,7 +94,7 @@ public class Main {
 
                     @Override
                     public void playlistLoaded(AudioPlaylist playlist) {
-                        for (AudioTrack track : playlist.getTracks()){
+                        for (AudioTrack track : playlist.getTracks()) {
                             player.playTrack(track);
                             player.setVolume(1);
                         }
@@ -129,49 +129,14 @@ public class Main {
                 voiceChannel.connect().thenAccept(audioConnection -> {
                     textChannel.sendMessage("Connected.").join();
                     textChannel.sendMessage("Created by Yuki.").join();
-//                    AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-//                    playerManager.registerSourceManager(new YoutubeAudioSourceManager());
-//                    AudioPlayer player = playerManager.createPlayer();
-
-//                    audioConnection1 = audioConnection;
-
                     audioConnectionMap.put(server, audioConnection);
-//                    playerManagerMap.put(server, playerManager);
-//                    playerMap.put(server, player);
-//                    AudioSource source = new LavaplayerAudioSource(api, player);
-//                    audioConnection.setAudioSource(source);
-
-//                    playerManager.loadItem("https://www.youtube.com/watch?v=8pGRdRhjX3o", new AudioLoadResultHandler() {
-//                        @Override
-//                        public void trackLoaded(AudioTrack track) {
-//                            player.playTrack(track);
-//                        }
-//
-//                        @Override
-//                        public void playlistLoaded(AudioPlaylist playlist) {
-//                            for (AudioTrack track : playlist.getTracks()){
-//                                player.playTrack(track);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void noMatches() {
-//
-//                        }
-//
-//                        @Override
-//                        public void loadFailed(FriendlyException exception) {
-//
-//                        }
-//                    });
-
                 }).exceptionally(throwable -> {
                     throw new RuntimeException(throwable);
                 });
 
             }
 
-            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("leave")){
+            if (slashCommandInteraction.getCommandName().equalsIgnoreCase("leave")) {
                 slashCommandInteraction.createImmediateResponder().setContent("Disconnecting...").respond();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
                 audioConnection.close();
@@ -180,14 +145,16 @@ public class Main {
         });
         api.addMessageCreateListener(event -> {
             String msg = event.getMessageContent();
-            if (msg.equalsIgnoreCase(".debug")){
+            if (msg.equalsIgnoreCase(".debug")) {
                 System.out.println(".debug hit.");
                 System.out.println(String.format("Logged in as: %s", api.getYourself().getName()));
                 System.out.println(String.format("audioConnectionMap: %s", audioConnectionMap));
 
                 for (Server x : api.getServers()) {
 
-                System.out.println(String.format("Now connected to: %s", x));
-            }       } });
+                    System.out.println(String.format("Now connected to: %s", x));
+                }
+            }
+        });
     }
 }

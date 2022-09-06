@@ -2,6 +2,7 @@
 
 /join で召喚,  
 /play [URL] で再生,  
+/stop で停止,  
 /leave で退出.
 
 

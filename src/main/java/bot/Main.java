@@ -128,6 +128,7 @@ public class Main {
                     slashCommandInteraction.createImmediateResponder().setContent("どこのVCにも参加していません！").respond();
                     throw new RuntimeException(e);
                 }
+                System.out.println(String.format("in addSlashCommandCreateListener: Connected to: %s", server.getName()));
                 voiceChannel.connect().thenAccept(audioConnection -> {
                     textChannel.sendMessage("Connected.").join();
                     textChannel.sendMessage("Created by Yuki.").join();

@@ -33,6 +33,7 @@ public class Main {
 //    public static AudioPlayerManager playerManager;
 
     public static Map<Server, AudioConnection> audioConnectionMap = new HashMap();
+    public static Map<Server, TextChannel> textChannelMap = new HashMap();
 
     //    public static Map<Server, AudioPlayerManager> playerManagerMap;
 //    public static Map<Server, AudioPlayer> playerMap;
@@ -66,7 +67,7 @@ public class Main {
 //                playerManager.shutdown();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
                 audioConnection.removeAudioSource();
-                audioConnectionMap.remove(slashCommandInteraction.getServer().get());
+//                audioConnectionMap.remove(slashCommandInteraction.getServer().get());
             }
             if (slashCommandInteraction.getCommandName().equalsIgnoreCase("play")) {
 //                System.out.println(slashCommandInteraction.getOptionStringValueByIndex(0));
@@ -118,6 +119,7 @@ public class Main {
                         .respond();
                 TextChannel textChannel = slashCommandInteraction.getChannel().get();
                 Server server = slashCommandInteraction.getServer().get();
+                textChannelMap.put(server, textChannel);
 
                 ServerVoiceChannel voiceChannel;
                 try {
@@ -156,5 +158,15 @@ public class Main {
                 }
             }
         });
+        api.addServerVoiceChannelMemberLeaveListener((event) -> {
+            if (!event.getUser().isBot()) {
+                AudioConnection audioConnection = audioConnectionMap.get(event.getServer());
+                if (event.getChannel().getConnectedUsers().stream().count() == 1){
+                    audioConnection.close();
+                    audioConnectionMap.remove(event.getServer());
+                }
+            }
+        });
+
     }
 }

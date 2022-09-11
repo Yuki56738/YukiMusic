@@ -62,7 +62,7 @@ public class Main {
                 return;
             }
             if (slashCommandInteraction.getCommandName().equalsIgnoreCase("stop")) {
-                slashCommandInteraction.createImmediateResponder().setContent("Wait...").respond();
+                slashCommandInteraction.createImmediateResponder().setContent("Stopping ...").respond();
 //                AudioPlayerManager playerManager = playerManagerMap.get(slashCommandInteraction.getServer().get());
 //                playerManager.shutdown();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
@@ -142,8 +142,10 @@ public class Main {
             if (slashCommandInteraction.getCommandName().equalsIgnoreCase("leave")) {
                 slashCommandInteraction.createImmediateResponder().setContent("Disconnecting...").respond();
                 AudioConnection audioConnection = audioConnectionMap.get(slashCommandInteraction.getServer().get());
+                TextChannel textChannel = slashCommandInteraction.getChannel().get();
                 audioConnection.close();
                 audioConnectionMap.remove(slashCommandInteraction.getServer().get());
+                textChannelMap.remove(textChannel);
             }
         });
         api.addMessageCreateListener(event -> {

@@ -17,11 +17,18 @@ import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.channel.ServerVoiceChannel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.channel.VoiceChannel;
+import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.interaction.*;
 import org.w3c.dom.Text;
 
+import java.awt.*;
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -131,8 +138,24 @@ public class Main {
                 System.out.println(String.format("in addSlashCommandCreateListener: Connected to: %s", server.getName()));
                 voiceChannel.connect().thenAccept(audioConnection -> {
                     textChannel.sendMessage("Connected.").join();
-                    textChannel.sendMessage("Created by Yuki.").join();
+//                    textChannel.sendMessage("Created by Yuki.").join();
+
                     audioConnectionMap.put(server, audioConnection);
+
+                    Path greetingFile = Paths.get("greeting.txt");
+                    String greetingMessage;
+                    try {
+                        greetingMessage = Files.readString(greetingFile);
+                    } catch (IOException var8) {
+                        throw new RuntimeException(var8);
+                    }
+
+                    MessageBuilder message = (MessageBuilder) (new MessageBuilder())
+                            .setEmbed((new EmbedBuilder())
+                                    .setTitle("YukiMusic")
+                                    .setDescription(greetingMessage)
+                                    .setColor(Color.MAGENTA));
+                    message.send(textChannel);
                 }).exceptionally(throwable -> {
                     throw new RuntimeException(throwable);
                 });

@@ -97,14 +97,14 @@ public class Main {
                     @Override
                     public void trackLoaded(AudioTrack track) {
                         player.playTrack(track);
-                        player.setVolume(1);
+                        player.setVolume(2);
                     }
 
                     @Override
                     public void playlistLoaded(AudioPlaylist playlist) {
                         for (AudioTrack track : playlist.getTracks()) {
                             player.playTrack(track);
-                            player.setVolume(1);
+                            player.setVolume(2);
                         }
                     }
 
